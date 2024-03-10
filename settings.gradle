@@ -1,0 +1,5 @@
+rootProject.name = 'member'
+include 'member-core'
+include 'member-api'
+include 'member-message'
+
