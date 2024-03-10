@@ -2,6 +2,7 @@ package com.azxca1731.member.domain.sign;
 
 import com.azxca1731.member.common.BaseResponse;
 import com.azxca1731.member.common.Code;
+import com.azxca1731.member.common.exception.NotSavedException;
 import com.azxca1731.member.domain.business.BusinessCreateRequest;
 import com.azxca1731.member.domain.business.BusinessResponse;
 import com.azxca1731.member.domain.business.BusinessService;
@@ -13,7 +14,7 @@ import com.azxca1731.member.domain.sign.kafka.SignOutTopicMessage;
 import com.azxca1731.member.domain.sign.kafka.SignUpProducer;
 import com.azxca1731.member.domain.sign.kafka.SignUpTopicMessage;
 import com.azxca1731.member.domain.sign.request.SingOutRequest;
-import com.azxca1731.member.domain.sign.request.SingUpRequest;
+import com.azxca1731.member.domain.sign.request.SignUpRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,14 +27,14 @@ import java.util.Objects;
 public class SignService {
     private final MemberService memberService;
     private final BusinessService businessService;
-    private final SignUpValidator validator;
+    private final SignUpRequestValidator validator;
     private final SignUpProducer signUpProducer;
     private final SignOutProducer signOutProducer;
     private static final String SIGN_UP_REFUSE_MESSAGE = "정확하지 않은 정보입니다. 확인해주세요";
     private static final String SIGN_OUT_REFUSE_MESSAGE = "유효하지 않은 멤버입니다. 확인해주세요";
 
     @Transactional
-    public BaseResponse signUp(SingUpRequest request) {
+    public BaseResponse signUp(SignUpRequest request) {
         List<String> unValidField = validator.verifyRequest(request);
         if (!unValidField.isEmpty()) {
             return BaseResponse.failed(unValidField, Code.SIGN_UP_VALIDATION_REJECT, SIGN_UP_REFUSE_MESSAGE);
@@ -64,19 +65,19 @@ public class SignService {
 
     private void checkResponse(MemberResponse member, BusinessResponse business) {
         if (Objects.isNull(member)) {
-            throw new RuntimeException("member can't be null");
+            throw new NotSavedException("member can't be null");
         }
 
         if (Objects.isNull(business)) {
-            throw new RuntimeException("business can't be null");
+            throw new NotSavedException("business can't be null");
         }
 
         if (member.getMemberId() <= 0) {
-            throw new RuntimeException("invalid member id, member id: " + member.getMemberId());
+            throw new NotSavedException("invalid member id, member id: " + member.getMemberId());
         }
 
         if (business.getBusinessId() <= 0) {
-            throw new RuntimeException("invalid business id, business id: " + business.getBusinessId());
+            throw new NotSavedException("invalid business id, business id: " + business.getBusinessId());
         }
     }
 
@@ -93,7 +94,7 @@ public class SignService {
                 .build();
     }
 
-    private ChangeRegularMemberRequest makeMemberRequest(SingUpRequest request) {
+    private ChangeRegularMemberRequest makeMemberRequest(SignUpRequest request) {
         return ChangeRegularMemberRequest.builder()
                 .memberId(Long.parseLong(request.getMemberId()))
                 .rawPassword(request.getRawPassword())
@@ -101,7 +102,7 @@ public class SignService {
                 .build();
     }
 
-    private BusinessCreateRequest makeBusinessRequest(SingUpRequest request, MemberResponse member) {
+    private BusinessCreateRequest makeBusinessRequest(SignUpRequest request, MemberResponse member) {
         return BusinessCreateRequest.builder()
                 .ownerMemberId(member.getMemberId())
                 .businessNumber(request.getBusinessNumber())

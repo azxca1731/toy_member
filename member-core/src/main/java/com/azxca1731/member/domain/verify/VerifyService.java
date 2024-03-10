@@ -16,7 +16,7 @@ import java.util.List;
 public class VerifyService {
     private final MemberService memberService;
     private final VerifyProvider verifyProvider;
-    private final VerifyValidator validator;
+    private final VerifyRequestValidator validator;
     private final Md5HashEncoder md5HashEncoder;
 
     private static final String VERIFY_REFUSE_MESSAGE = "정확하지 않은 정보입니다. 확인해주세요";

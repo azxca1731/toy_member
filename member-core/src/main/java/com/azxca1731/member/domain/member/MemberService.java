@@ -81,7 +81,7 @@ public class MemberService {
     }
 
     public MemberResponse findByMemberId(String memberId) {
-        if (idValidator.isValidated(memberId)) {
+        if (!idValidator.isValidated(memberId)) {
             return MemberResponse.empty();
         }
 

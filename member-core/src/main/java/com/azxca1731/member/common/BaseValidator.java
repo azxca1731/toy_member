@@ -14,4 +14,13 @@ public class BaseValidator<T> {
 
         return Objects.isNull(verified) ? fieldName : null;
     }
+
+    public static boolean isDigit(String str) {
+        try {
+            Long.parseLong(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 }

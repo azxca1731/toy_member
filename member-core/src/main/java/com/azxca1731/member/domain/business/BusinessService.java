@@ -46,7 +46,7 @@ public class BusinessService {
     }
 
     public BusinessResponse findByBusinessId(String businessId) {
-        if (idValidator.isValidated(businessId)) {
+        if (!idValidator.isValidated(businessId)) {
             return BusinessResponse.empty();
         }
 

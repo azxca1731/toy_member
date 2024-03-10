@@ -1,11 +1,15 @@
 package com.azxca1731.member.domain.sign.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor
-public class SingUpRequest {
+@AllArgsConstructor
+public class SignUpRequest {
     private String memberId;
     private String email;
     private String rawPassword;

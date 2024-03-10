@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Component
-public class VerifyValidator {
+public class VerifyRequestValidator {
     private static final BaseValidator<VerifyRequest> VALIDATOR = new BaseValidator<>();
     private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$");
     private static final Pattern BIRTHDAY_PATTERN = Pattern.compile("^\\d{4}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])$");
